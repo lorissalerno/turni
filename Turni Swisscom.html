@@ -164,6 +164,8 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .ttit{flex:1;min-width:0}
 .ttit h3{margin:0;font-size:17px;color:var(--head);letter-spacing:.1px}
 .tsub{font-size:12px;color:var(--muted);margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.thead .iconbtn{width:40px;height:40px;background:rgba(255,255,255,.14);color:#fff}
+.thead .iconbtn:hover{background:rgba(255,255,255,.24);color:#fff}
 .ttot{margin:14px 20px 4px;text-align:center}
 .ttot b{display:block;font-size:26px;letter-spacing:.5px;color:var(--head);font-variant-numeric:tabular-nums}
 .tpill{display:inline-block;margin-top:6px;font-size:11px;font-weight:700;letter-spacing:.4px;background:var(--track);border:1px solid var(--line);color:var(--muted);border-radius:99px;padding:3px 10px}
@@ -666,9 +668,12 @@ function mostraTurno(k){
     const vis=visSe(t),SE=effSE(t),S=SE[0],E=SE[1];
     let lav=0,pausa=0,ext=0; vis.forEach(x=>{const c=cls(x.n); if(c==='pause')pausa+=x.e-x.s; else{lav+=x.e-x.s; if(c==='extra')ext+=x.e-x.s;}});
     const tg=new Set(vis.map(x=>cls(x.n)));
-    tipo='Turno di lavoro'+(tg.has('extra')?' + straordinario':'')+(tg.has('recup')?' · recupero':'')+(tg.has('meet')?' · meeting':'')+(tg.has('train')?' · training':''); ico=IC.cal;
-    corpo+=`<div class="ttot"><b>${hm(S)} – ${hm(E)}</b><span class="tpill">${dur(E-S)} totali${pausa?' · '+dur(pausa)+' pausa':''}${ext?' · +'+dur(ext)+' straordinario':''}</span></div>`;
-    corpo+='<ul class="tlist">'+vis.map(x=>{const c=cls(x.n),col={pause:'pause',train:'train',meet:'meet',extra:'extra',recup:'recup',off:'shift',shift:'shift'}[c]||'shift';return `<li class="triga"><span class="pall ${c}" style="background:var(--${col})"></span><span><span class="to">${hm(x.s)}–${hm(x.e)}</span><span class="tn"> ${esc(x.n)}${x.d?'<small>'+esc(x.d)+'</small>':''}</span></span><span class="du">${dur(x.e-x.s)}</span></li>`;}).join('')+'</ul>';
+    tipo='Turno di lavoro'+(tg.has('extra')?' + Straordinario':'')+(tg.has('recup')?' · Recupero':'')+(tg.has('meet')?' · Meeting':'')+(tg.has('train')?' · Training':''); ico=IC.cal;
+    corpo+=`<div class="ttot"><b>${hm(S)} – ${hm(E)}</b><span class="tpill">${dur(lav)} lavoro${pausa?' · '+dur(pausa)+' pausa':''}${ext?' · +'+dur(ext)+' straordinario':''}</span></div>`;
+    const mapC=x=>cls(x.n)==='off'?'shift':cls(x.n);
+    const righe=[]; vis.forEach(x=>{const l=righe[righe.length-1]; if(l&&l.c===mapC(x)&&l.e===x.s){l.e=x.e; if(isOffice(l.n)&&!isOffice(x.n)){l.n=x.n;l.d=x.d;} else if(x.d&&!l.d)l.d=x.d;} else righe.push({s:x.s,e:x.e,n:x.n,d:x.d,c:mapC(x)});});
+    const freq={}; righe.forEach(r=>{if(r.d)freq[r.d]=(freq[r.d]||0)+1;});
+    corpo+='<ul class="tlist">'+righe.map(x=>{const col={pause:'pause',train:'train',meet:'meet',extra:'extra',recup:'recup',off:'shift',shift:'shift'}[cls(x.n)]||'shift';return `<li class="triga"><span class="pall ${cls(x.n)}" style="background:var(--${col})"></span><span><span class="to">${hm(x.s)} – ${hm(x.e)}</span><span class="tn"> ${esc(x.n)}${x.d&&freq[x.d]<2?'<small>'+esc(x.d)+'</small>':''}</span></span><span class="du">${dur(x.e-x.s)}</span></li>`;}).join('')+'</ul>';
   } else if(t&&t.tipo==='vacanza'){tipo='Vacanza';ico=IC.sun;}
   else if(t&&t.tipo==='altro'){tipo=esc(t.label);ico=IC.cal;}
   const note=t?noteUniche(t):[];
@@ -678,7 +683,6 @@ function mostraTurno(k){
   $('tchiudi').innerHTML=IC.x;
   $('tok').onclick=chiudiTurno; $('tchiudi').onclick=chiudiTurno;
   $('tmodal').hidden=false;
-  requestAnimationFrame(()=>$('tok').focus());
 }
 function chiudiTurno(){$('tmodal').hidden=true;}
 const haNote=t=>t&&((t.note)||(t.segs||[]).some(x=>x.d));
