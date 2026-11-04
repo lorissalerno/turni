@@ -148,13 +148,13 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .seg.pause{background:var(--pause);color:var(--pauseTxt);font-weight:500;font-size:10px;border-radius:0}
 .seg.vac{background:var(--vac);letter-spacing:1.5px;font-size:10.5px}
 .seg.altro{background:var(--altro)}
-.seg.meet{background:var(--meet)} .seg.extra{background:var(--extra)} .seg.recup{background:var(--recup);color:var(--pauseTxt)}
+.seg.meet{background:var(--meet)} .seg.extra{background:var(--extra);color:var(--pauseTxt)} .seg.recup{background:var(--recup);color:var(--pauseTxt)}
 .seg.tiny span{visibility:hidden}
 .seg.nl{border-top-left-radius:0;border-bottom-left-radius:0}
 .seg.nr{border-top-right-radius:0;border-bottom-right-radius:0}
 .free{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--free)}
 .grplab{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.55);overflow:hidden;z-index:2}
-.grplab span{padding:0 4px;overflow:hidden;text-overflow:ellipsis}
+.grplab{text-shadow:none}.grplab span{padding:1px 7px;overflow:hidden;text-overflow:ellipsis;background:rgba(17,24,39,.78);border-radius:99px;text-shadow:none}
 .grplab.tiny span{visibility:hidden}
 .det{grid-column:1/-1;margin:6px 0 2px;font-size:12px;color:var(--muted);display:grid;grid-template-columns:110px 1fr;gap:2px 10px;padding-left:137px}
 .det em{grid-column:2;color:var(--accent);font-style:italic}
@@ -219,7 +219,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
  .ptr .seg.shift{background:#3E71C8}.ptr .seg.train{background:#7E5DB5}
  .ptr .seg.pause{background:#B9C0CA;color:#2B3240;font-size:6pt;border-radius:0}
   .ptr .seg.meet{background:#BE7431}.ptr .seg.extra{background:#5F9BD1}.ptr .seg.recup{background:#D4DAE1;color:#2B3240}
- .ptr .seg.vac{background:#3F8F5C;font-size:6.5pt}.ptr .seg.altro{background:#B97A26}.ptr .grplab{font-size:6.8pt}
+ .ptr .seg.vac{background:#3F8F5C;font-size:6.5pt}.ptr .seg.altro{background:#B97A26}.ptr .seg.extra{color:#2B3240}.ptr .grplab{font-size:6.8pt;text-shadow:none}.ptr .grplab span{background:rgba(17,24,39,.85);border-radius:99px;padding:0 4px}
   .ptr .seg.nl{border-top-left-radius:0;border-bottom-left-radius:0}
   .ptr .seg.nr{border-top-right-radius:0;border-bottom-right-radius:0}
  .ptr .free{font-size:7pt;color:#9AA2AE}
