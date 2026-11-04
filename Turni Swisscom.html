@@ -50,9 +50,8 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .modal[hidden]{display:none}
 .dialog{width:100%;max-width:540px;max-height:calc(100vh - 36px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .dialog .panel{margin:0;padding:0;border:0;background:transparent;border-radius:0}
-.tabs{display:flex;gap:4px;margin-top:12px;border-bottom:1px solid var(--line)}
-.tab{background:transparent;color:var(--muted);border:0;border-bottom:2px solid transparent;border-radius:0;padding:7px 10px;font-size:12px;font-weight:600}
-.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.orca{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.orca::before,.orca::after{content:"";height:1px;flex:1;background:var(--line)}
 .qrvid{display:none;width:100%;max-height:330px;margin-top:12px;border-radius:4px;background:#000;object-fit:cover}
 .qrvid.on{display:block}
 .empty{padding:38px 22px 34px;text-align:center;display:flex;flex-direction:column;align-items:center}
@@ -149,22 +148,17 @@ button:disabled{opacity:.35;cursor:default;filter:none}
  <div class="dialog">
   <section class="card panel" id="panel">
    <div class="ptitle" id="ptitle"></div>
-   <div class="tabs"><button class="tab on" id="tabLink">Link calendario</button><button class="tab" id="tabQR">Codice QR</button></div>
-   <div id="paneLink">
-    <div class="pdesc" style="margin-top:12px">Incolla il link .ics del tuo calendario Genesys. Viene salvato <b>solo in questo browser</b>, non nel file: puoi condividere la pagina senza condividere i tuoi turni.</div>
-    <div class="linkrow">
-      <input id="linkIn" type="password" autocomplete="off" spellcheck="false" placeholder="https://api.euc2.pure.cloud/api/v2/workforcemanagement/calendar/data/ics?calendarId=...">
-      <button class="iconbtn" id="eye" title="Mostra / nascondi link"></button>
-    </div>
-    <div class="pbtns"><button id="salva"></button><button class="sec" id="rimuovi"></button><button class="sec" id="chiudi">Chiudi</button></div>
-    <div class="pinfo" id="pinfo"></div>
+   <div class="pdesc" style="margin-top:6px">Incolla il link .ics del calendario, oppure leggilo dal codice QR. Resta <b>solo in questo browser</b>: puoi condividere la pagina senza condividere i tuoi turni.</div>
+   <div class="linkrow">
+     <input id="linkIn" type="password" autocomplete="off" spellcheck="false" placeholder="https://api.euc2.pure.cloud/api/v2/workforcemanagement/calendar/data/ics?calendarId=...">
+     <button class="iconbtn" id="eye" title="Mostra / nascondi link"></button>
    </div>
-   <div id="paneQR" hidden>
-    <div class="pdesc" style="margin-top:12px">Inquadra con la fotocamera il codice QR che contiene il link del calendario, oppure carica uno screenshot del QR.</div>
-    <div class="pbtns"><button id="qrCam">Scansiona con la fotocamera</button><button class="sec" id="qrFileBtn">Carica immagine QR</button></div>
-    <video id="qrVideo" class="qrvid" playsinline muted autoplay></video>
-    <div class="pinfo" id="qrHint"></div>
-   </div>
+   <div class="pbtns"><button id="salva"></button><button class="sec" id="rimuovi"></button><button class="sec" id="chiudi">Chiudi</button></div>
+   <div class="pinfo" id="pinfo"></div>
+   <div class="orca"><span>oppure QR</span></div>
+   <div class="pbtns"><button class="sec" id="qrCam"></button><button class="sec" id="qrFileBtn">Carica immagine QR</button></div>
+   <video id="qrVideo" class="qrvid" playsinline muted autoplay></video>
+   <div class="pinfo" id="qrHint"></div>
   </section>
  </div>
 </div>
@@ -441,20 +435,11 @@ function apriPanel(){
   const pi=$('pinfo');
   pi.className='pinfo '+({ok:'ok',saved:'warn',err:'err'}[stato]||'');
   pi.textContent={ok:'✓ Il link funziona: i turni si aggiornano automaticamente.',saved:'Il link è salvato, ma il browser blocca la lettura diretta. Usa Aggiorna: scarica il file e trascinalo nella pagina.',err:statoMsg,none:''}[stato]||'';
-  setTab('link');
+  qrPrepara();
   $('modal').hidden=false;
   requestAnimationFrame(()=>$('linkIn').focus());
 }
 function chiudiPanel(){ stopQR(); $('modal').hidden=true; }
-function setTab(t){
-  const isLink=t==='link';
-  $('tabLink').classList.toggle('on',isLink);
-  $('tabQR').classList.toggle('on',!isLink);
-  $('paneLink').hidden=!isLink;
-  $('paneQR').hidden=isLink;
-  if(isLink){ stopQR(); return; }
-  qrPrepara();
-}
 async function salvaLink(){
   const v=$('linkIn').value.trim(), pi=$('pinfo');
   if(!/^https:\/\/\S+$/i.test(v)){pi.className='pinfo err';pi.textContent='Il link deve iniziare con https:// e non contenere spazi.';return;}
@@ -474,21 +459,20 @@ const qrHas=()=>{try{return typeof BarcodeDetector!=='undefined';}catch(e){retur
 function qrHint(t,c){const e=$('qrHint'); if(!e) return; e.className='pinfo '+(c||''); e.textContent=t||'';}
 async function qrDetector(){ if(qrDet) return qrDet; qrDet=new BarcodeDetector({formats:['qr_code']}); return qrDet; }
 function qrPrepara(){
-  if(qrHas()){ if(!$('qrHint').textContent) qrHint('Inquadra il QR oppure scegli un\'immagine: il link viene riempito e verificato da solo.'); return; }
-  qrHint('Questo browser non sa leggere i QR. Incolla il link nella scheda «Link calendario», oppure scansiona il QR con l\'app Fotocamera del telefono.','warn');
+  if(qrHas()){ if(!$('qrHint').textContent) qrHint('Il link letto dal QR viene inserito qui sopra e verificato da solo.'); return; }
+  qrHint('Questo browser non sa leggere i QR: incolla il link qui sopra, oppure scansiona il QR con l\'app Fotocamera del telefono.','warn');
   $('qrCam').disabled=true; $('qrFileBtn').disabled=true;
 }
 function stopQR(){
   qrRun=false;
   if(qrStream){ qrStream.getTracks().forEach(t=>t.stop()); qrStream=null; }
   const v=$('qrVideo'); if(v){ v.classList.remove('on'); v.srcObject=null; }
-  const b=$('qrCam'); if(b) b.textContent='Scansiona con la fotocamera';
+  const b=$('qrCam'); if(b) b.innerHTML=IC.qr+'Scansiona con la fotocamera';
 }
 function qrEsito(v){
   stopQR();
   if(!v){ qrHint('Nessun codice QR riconosciuto.','err'); return; }
   if(!/^https:\/\/\S+$/i.test(v)){ qrHint('Il QR non contiene un link https valido: '+String(v).slice(0,80),'err'); return; }
-  setTab('link');
   const i=$('linkIn'); i.value=v; i.type='text';
   $('pinfo').className='pinfo'; $('pinfo').textContent='QR letto: verifica del link…';
   salvaLink();
@@ -573,9 +557,8 @@ function render(){
   navUI(ks);
   if(!ks.length){
     const has=!!getLink();
-    out.innerHTML=`<div class="card empty"><div class="eico">${IC.cal}</div><h2>${has?'Nessun turno sincronizzato':'Nessun turno salvato'}</h2><p>${has?'Il calendario è collegato ma non ci sono ancora turni: prova ad aggiornare.':"Collega il calendario del tuo lavoro: i turni arrivano da soli. Puoi incollare il link .ics oppure leggere il codice QR."}</p><div class="ebtns"><button id="cta">${has?IC.sync+'Aggiorna':IC.link+'Collega il calendario'}</button><button class="sec" id="ctafile">${IC.down}Carica un file</button></div></div>`;
+    out.innerHTML=`<div class="card empty"><div class="eico">${IC.cal}</div><h2>${has?'Nessun turno sincronizzato':'Nessun turno salvato'}</h2><p>${has?'Il calendario è collegato ma non ci sono ancora turni: prova ad aggiornare.':"Collega il calendario del tuo lavoro: i turni arrivano da soli. Incolla il link .ics o leggilo dal codice QR, oppure trascina qui il file scaricato."}</p><div class="ebtns"><button id="cta">${has?IC.sync+'Aggiorna':IC.link+'Collega il calendario'}</button></div></div>`;
     $('cta').onclick=has?()=>sync(true):apriPanel;
-    $('ctafile').onclick=()=>$('file').click();
     return;
   }
   const keys=giorniVista();
@@ -668,7 +651,7 @@ function init(){
   $('prev').innerHTML=IC.up; $('next').innerHTML=IC.dn;
   $('prev').onclick=()=>vai(-1); $('next').onclick=()=>vai(1); $('oggi').onclick=tornaOggi;
   $('stato').onclick=()=>$('modal').hidden?apriPanel():chiudiPanel();
-  $('tabLink').onclick=()=>setTab('link'); $('tabQR').onclick=()=>setTab('qr');
+  $('qrCam').innerHTML=IC.qr+'Scansiona con la fotocamera';
   $('qrCam').onclick=qrStart; $('qrFileBtn').onclick=()=>$('qrFile').click();
   $('qrFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f) qrDaFile(f);};
   $('modal').onclick=e=>{if(e.target===$('modal')) chiudiPanel();};

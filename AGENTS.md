@@ -30,9 +30,9 @@ App a **file singolo**: `Turni Swisscom.html` (HTML + CSS + JS inline, zero dipe
 - Testo proveniente da ICS/TXT è **non fidato**: passalo sempre da `esc()` prima di inserirlo in `innerHTML`.
 
 ### Collegamento calendario (popup) e QR
-- Il pannello del link è un popup: `#modal` > `.dialog` > `#panel`, con due schede (`#paneLink`, `#paneQR`). Si apre con `apriPanel()` e si chiude con `chiudiPanel()` (che ferma anche la fotocamera).
+- Il pannello del link è un popup unico (`#modal` > `.dialog` > `#panel`): campo link e scansione QR convivono nella stessa vista, senza schede. Si apre con `apriPanel()` e si chiude con `chiudiPanel()` (che ferma anche la fotocamera).
 - La lettura dei QR usa solo API native (`BarcodeDetector` + `getUserMedia`), nessuna libreria: se il browser non la supporta i pulsanti vengono disabilitati con un messaggio. Un QR valido riempie `#linkIn` e chiama `salvaLink()`.
-- Lo stato vuoto in `render()` è la card `.empty` con i pulsanti `#cta` (apre il popup, o `sync(true)` se il link è già salvato) e `#ctafile` (input file).
+- Lo stato vuoto in `render()` è la card `.empty` con il solo pulsante `#cta` (apre il popup, o `sync(true)` se il link è già salvato); i file si importano col trascinamento o dal riquadro "Aggiorna".
 
 ### Rendering
 - Il render è a stringhe HTML con `innerHTML`; nessun framework, nessun DOM virtuale. `trackHTML()` è condiviso tra vista schermo (`track`) e stampa (`ptr`): se cambi la geometria delle barre, verifica entrambi.
