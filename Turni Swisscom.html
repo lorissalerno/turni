@@ -86,6 +86,8 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .pcol button{justify-content:center;min-height:44px}
 .ctaRow #salva{flex:1;height:42px;justify-content:center}
 .ctaRow .sec{height:42px}
+#cico{background:color-mix(in srgb,var(--err) 14%,transparent);color:var(--err)}
+#cancSi{background:var(--err);color:#fff;justify-content:center}
 .orca{display:flex;align-items:center;gap:10px;margin:16px 0 2px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .orca::before,.orca::after{content:"";height:1px;flex:1;background:var(--line)}
 .qropt{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:8px;cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
@@ -190,7 +192,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .overlay{position:fixed;inset:0;background:rgba(11,92,255,.12);border:3px dashed var(--accent);display:none;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--accent);z-index:99;pointer-events:none}
 .overlay.on{display:flex}
 #print{display:none}
-@media (max-width:600px){body{overflow-x:clip}.wrap{padding:10px 10px 6px}header{gap:8px;padding-bottom:8px;margin-bottom:10px;align-items:center}header>div:first-child{flex:1;min-width:0}h1{font-size:19px}.logo{width:38px;height:38px}.sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.right{justify-content:flex-end;gap:6px}.tbtn,.iconbtn{height:44px}.iconbtn{width:44px}.stato{height:44px;width:44px;padding:0;justify-content:center;font-size:0;gap:0}.modal{align-items:flex-end;padding:0}#tmodal{align-items:flex-start}#pmodal{align-items:flex-start}.dialog{max-width:none;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;animation:sheet .3s cubic-bezier(.2,.8,.2,1)}#tmodal .dialog,#pmodal .dialog{border-radius:16px;margin-top:calc(24px + env(safe-area-inset-top));animation:sheetTop .3s cubic-bezier(.2,.8,.2,1)}.ctaRow #salva,.ctaRow .sec{height:48px}.field input{height:48px}.tfoot button{flex:1;min-height:44px}.whead{display:grid;grid-template-columns:1fr;padding:6px 10px 0}.whead>div:first-child{display:none}.scale{height:12px}.scale span{font-size:9px}.scale span:nth-child(even):not(:last-child){display:none}.scale span.last{display:none}.week{margin-bottom:10px}.week~.week .whead{display:none}.row{display:grid;grid-template-columns:1fr;row-gap:4px;padding:8px 10px 9px 7px;min-height:0}.dl{flex-direction:row;align-items:center;gap:6px;margin-bottom:0;font-size:12.5px;line-height:1.3}.dl b{width:auto}.badge{font-size:8px;padding:2px 5px}.info{margin-left:2px}.track{height:32px}.seg{font-size:11px}.free{color:var(--muted);font-weight:600;font-size:12px}.det{padding-left:0;grid-template-columns:84px 1fr;gap:2px 8px}.nav{gap:8px;margin-bottom:10px}#prev{height:44px}.nav .iconbtn{width:44px;height:44px}.nav .sec{min-height:44px}#oggi:disabled{opacity:.6}.empty{padding:26px 16px 24px}.footbar{padding-bottom:env(safe-area-inset-bottom)}.footin{font-size:10.5px;padding:7px 12px;flex-wrap:wrap;row-gap:2px}.footin .sep{display:none}#toasts{bottom:calc(14px + env(safe-area-inset-bottom))}.tfoot{flex-wrap:wrap}}
+@media (max-width:600px){body{overflow-x:clip}.wrap{padding:10px 10px 6px}header{gap:8px;padding-bottom:8px;margin-bottom:10px;align-items:center}header>div:first-child{flex:1;min-width:0}h1{font-size:19px}.logo{width:38px;height:38px}.sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.right{justify-content:flex-end;gap:6px}.tbtn,.iconbtn{height:44px}.iconbtn{width:44px}.stato{height:44px;width:44px;padding:0;justify-content:center;font-size:0;gap:0}.modal{align-items:flex-end;padding:0}#tmodal{align-items:flex-start}#pmodal{align-items:flex-start}#cmodal{align-items:flex-start}.dialog{max-width:none;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;animation:sheet .3s cubic-bezier(.2,.8,.2,1)}#tmodal .dialog,#pmodal .dialog,#cmodal .dialog{border-radius:16px;margin-top:calc(24px + env(safe-area-inset-top));animation:sheetTop .3s cubic-bezier(.2,.8,.2,1)}.ctaRow #salva,.ctaRow .sec{height:48px}.field input{height:48px}.tfoot button{flex:1;min-height:44px}.whead{display:grid;grid-template-columns:1fr;padding:6px 10px 0}.whead>div:first-child{display:none}.scale{height:12px}.scale span{font-size:9px}.scale span:nth-child(even):not(:last-child){display:none}.scale span.last{display:none}.week{margin-bottom:10px}.week~.week .whead{display:none}.row{display:grid;grid-template-columns:1fr;row-gap:4px;padding:8px 10px 9px 7px;min-height:0}.dl{flex-direction:row;align-items:center;gap:6px;margin-bottom:0;font-size:12.5px;line-height:1.3}.dl b{width:auto}.badge{font-size:8px;padding:2px 5px}.info{margin-left:2px}.track{height:32px}.seg{font-size:11px}.free{color:var(--muted);font-weight:600;font-size:12px}.det{padding-left:0;grid-template-columns:84px 1fr;gap:2px 8px}.nav{gap:8px;margin-bottom:10px}#prev{height:44px}.nav .iconbtn{width:44px;height:44px}.nav .sec{min-height:44px}#oggi:disabled{opacity:.6}.empty{padding:26px 16px 24px}.footbar{padding-bottom:env(safe-area-inset-bottom)}.footin{font-size:10.5px;padding:7px 12px;flex-wrap:wrap;row-gap:2px}.footin .sep{display:none}#toasts{bottom:calc(14px + env(safe-area-inset-bottom))}.tfoot{flex-wrap:wrap}}
 @keyframes sheet{from{opacity:0;transform:translateY(24px)}}
 @keyframes sheetTop{from{opacity:0;transform:translateY(-24px)}}
 @page{size:A4 portrait;margin:11mm 12mm}
@@ -267,6 +269,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 </div>
  <div class="modal screen" id="tmodal" hidden><div class="dialog tdialog" id="tdialog" role="dialog" aria-modal="true"></div></div>
  <div class="modal screen" id="pmodal" hidden><div class="dialog" role="dialog" aria-modal="true"><div class="dhead"><div class="dico" id="pico"></div><div class="dtit"><div class="ptitle">Scarica il PDF</div><div class="dsub">Scegli quali settimane includere. Ogni mese resta su un foglio separato.</div></div><button class="iconbtn" id="pchiudi" title="Chiudi"></button></div><div class="ctaRow pcol"><button id="pdfOggi"></button><button class="sec" id="pdfTutte"></button></div></div></div>
+ <div class="modal screen" id="cmodal" hidden><div class="dialog" role="dialog" aria-modal="true"><div class="dhead"><div class="dico" id="cico"></div><div class="dtit"><div class="ptitle">Cancellare tutti i turni?</div><div class="dsub">Verranno eliminati i turni salvati in questo browser. Il link resta collegato.</div></div><button class="iconbtn" id="cchiudi" title="Chiudi"></button></div><div class="ctaRow pcol"><button id="cancSi"></button><button class="sec" id="cancNo"></button></div></div></div>
 
 <section class="card steps" id="steps" hidden>
   <div class="ptitle" style="color:var(--warn)">Il calendario è in download</div>
@@ -741,6 +744,8 @@ function tornaOggi(){vista=null;render();}
 /* ===== PDF: scelta intervallo, un mese per pagina, sempre bianco ===== */
 function apriPdf(){ $('pmodal').hidden=false; requestAnimationFrame(()=>$('pdfOggi').focus()); }
 function chiudiPdf(){ $('pmodal').hidden=true; }
+function apriCanc(){ $('cmodal').hidden=false; }
+function chiudiCanc(){ $('cmodal').hidden=true; }
 function pdf(modo){
   const d=load(), ks=Object.keys(d).sort(); if(!ks.length){msg('Nessun turno da stampare.',true);return;}
   const fine=kAdd(monday(ks[ks.length-1]),6), mesi={}, keys=[];
@@ -773,7 +778,11 @@ function init(){
   $('pdfOggi').innerHTML=IC.check+'<span>Solo da oggi in poi</span>'; $('pdfTutte').innerHTML=IC.cal+'<span>Anche le precedenti</span>';
   $('pdfOggi').onclick=()=>{chiudiPdf();pdf('oggi');}; $('pdfTutte').onclick=()=>{chiudiPdf();pdf('tutte');};
   $('pmodal').onclick=e=>{if(e.target===$('pmodal')) chiudiPdf();};
-  $('canc').innerHTML=IC.trash+'<span class="lbl">Cancella</span>'; $('canc').onclick=()=>{if(confirm('Cancellare tutti i turni salvati? Il link resta collegato.')){localStorage.removeItem(LS);vista=null;render();msg('Turni cancellati.');}};
+  $('canc').innerHTML=IC.trash+'<span class="lbl">Cancella</span>'; $('canc').onclick=()=>apriCanc();
+  $('cico').innerHTML=IC.trash; $('cchiudi').innerHTML=IC.x; $('cchiudi').onclick=chiudiCanc;
+  $('cancSi').innerHTML=IC.trash+'<span>Sì, cancella tutto</span>'; $('cancSi').onclick=()=>{localStorage.removeItem(LS);vista=null;chiudiCanc();render();msg('Turni cancellati.');};
+  $('cancNo').innerHTML=IC.check+'<span>Mantieni i turni</span>'; $('cancNo').onclick=chiudiCanc;
+  $('cmodal').onclick=e=>{if(e.target===$('cmodal')) chiudiCanc();};
   $('prev').innerHTML=IC.up+'<span>Settimana precedente</span>';
   $('prev').onclick=()=>vai(); $('oggi').onclick=tornaOggi;
   $('stato').onclick=()=>$('modal').hidden?apriPanel():chiudiPanel();
@@ -795,7 +804,7 @@ function init(){
   $('out').onclick=e=>{const r=e.target.closest('.row'); if(r) mostraTurno(r.dataset.k);};
   $('tmodal').onclick=e=>{if(e.target===$('tmodal')) chiudiTurno();};
   document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){ if(!$('tmodal').hidden){chiudiTurno();return;} if(!$('pmodal').hidden){chiudiPdf();return;} if(!$('modal').hidden){chiudiPanel();return;} if(!/INPUT|TEXTAREA/.test(e.target.tagName)) tornaOggi(); return; }
+    if(e.key==='Escape'){ if(!$('tmodal').hidden){chiudiTurno();return;} if(!$('pmodal').hidden){chiudiPdf();return;} if(!$('cmodal').hidden){chiudiCanc();return;} if(!$('modal').hidden){chiudiPanel();return;} if(!/INPUT|TEXTAREA/.test(e.target.tagName)) tornaOggi(); return; }
     if(/INPUT|TEXTAREA/.test(e.target.tagName)) return;
     if(e.key==='ArrowLeft'&&!$('prev').disabled) vai();});
   let dc=0; const ov=$('overlay');
