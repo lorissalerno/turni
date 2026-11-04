@@ -120,7 +120,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 #prev:disabled{opacity:.45}
 .tag{font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:3px;color:#fff}
 .tag.past{background:var(--off)} .tag.now{background:var(--accent)} .tag.next{background:var(--ok)}
-.week{margin-bottom:14px;overflow:hidden;animation:weekIn .38s cubic-bezier(.2,.8,.2,1) backwards}
+.week{margin-bottom:14px;overflow:hidden;scroll-margin-top:12px;animation:weekIn .38s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes weekIn{from{opacity:0;transform:translateY(12px)}}
 .whead,.row,.foot{display:grid;grid-template-columns:125px 1fr;column-gap:12px}
 .whead{padding:8px 14px 4px;border-bottom:1px solid var(--line)}
@@ -710,7 +710,9 @@ function vai(dir){
   if(dir<0){ const ks=Object.keys(load()).sort(); const min=ks.length?monday(ks[0]):cur; const n=vista?kAdd(vista,-7):kAdd(cur,-7); vista=n<min?min:n; }
   else{ if(!vista) return; const n=kAdd(vista,7); vista=n>oggi?null:n; }
   const y=window.scrollY, h=document.documentElement.scrollHeight;
+  const ridotto=matchMedia('(prefers-reduced-motion: reduce)').matches;
   render();
+  if(dir<0&&!ridotto){ const w=document.querySelector('#out .week'); if(w){ w.scrollIntoView({behavior:'smooth',block:'start'}); return; } }
   window.scrollTo(0,y+document.documentElement.scrollHeight-h);
 }
 function tornaOggi(){vista=null;render();}
