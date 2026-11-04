@@ -46,14 +46,41 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .steps{border-left:3px solid var(--warn)}
 .steps ol{margin:6px 0 12px;padding-left:20px;font-size:13px;line-height:1.7}
 .steps a{color:var(--accent);cursor:pointer;text-decoration:underline}
-.modal{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,14,26,.45);backdrop-filter:blur(2px)}
+.modal{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(5,10,20,.55);backdrop-filter:blur(4px);animation:fade .18s ease}
 .modal[hidden]{display:none}
-.dialog{width:100%;max-width:540px;max-height:calc(100vh - 36px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+@keyframes fade{from{opacity:0}}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}}
+.dialog{width:100%;max-width:500px;max-height:calc(100vh - 32px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px 22px 18px;box-shadow:0 24px 64px rgba(0,0,0,.45),0 6px 18px rgba(0,0,0,.25);animation:pop .24s cubic-bezier(.2,.8,.2,1)}
 .dialog .panel{margin:0;padding:0;border:0;background:transparent;border-radius:0}
-.orca{display:flex;align-items:center;gap:10px;margin:14px 0 0;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.modal :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.dhead{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.dico{width:42px;height:42px;flex:none;border-radius:10px;background:var(--todaybg);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.dico svg{width:22px;height:22px}
+.dtit{flex:1;min-width:0}
+.dsub{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.45}
+.dhead .iconbtn{width:34px;height:34px;background:transparent;border-color:transparent;color:var(--muted)}
+.dhead .iconbtn:hover{color:var(--text);background:var(--grid)}
+.field{position:relative}
+.field input{width:100%;height:46px;border:1px solid var(--line);border-radius:8px;padding:0 46px 0 12px;background:var(--bg);color:var(--text);font-family:Consolas,monospace;font-size:13px;transition:border-color .15s,box-shadow .15s}
+.field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 20%,transparent)}
+.eyeIn{position:absolute;top:5px;right:5px;width:36px;height:36px;padding:0;justify-content:center;background:transparent;border-color:transparent;color:var(--muted)}
+.eyeIn:hover{color:var(--text);background:var(--grid)}
+.ctaRow{display:flex;gap:10px;margin-top:12px}
+.ctaRow #salva{flex:1;height:42px;justify-content:center}
+.ctaRow .sec{height:42px}
+.orca{display:flex;align-items:center;gap:10px;margin:16px 0 2px;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .orca::before,.orca::after{content:"";height:1px;flex:1;background:var(--line)}
-.qrvid{display:none;width:100%;max-height:330px;margin-top:12px;border-radius:4px;background:#000;object-fit:cover}
+.qropt{display:flex;align-items:center;gap:12px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:8px;cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.qropt:hover{border-color:var(--accent);background:var(--todaybg);filter:none}
+.qropt:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.qropt .qi{width:38px;height:38px;flex:none;border-radius:8px;background:var(--track);color:var(--accent);display:flex;align-items:center;justify-content:center}
+.qropt .qi svg{width:19px;height:19px}
+.qropt b{display:block;font-size:13px;font-weight:600;color:var(--text)}
+.qropt small{display:block;font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35}
+.qrvid{display:none;width:100%;max-height:320px;margin-top:10px;border-radius:8px;border:1px solid var(--line);background:#000;object-fit:cover}
 .qrvid.on{display:block}
+@media (prefers-reduced-motion:reduce){.modal,.dialog{animation:none}}
+@media (max-width:480px){.dialog{padding:16px}}
 .empty{padding:38px 22px 34px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .empty .eico{width:48px;height:48px;border-radius:50%;background:var(--todaybg);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 .empty .eico svg{width:24px;height:24px}
@@ -147,16 +174,20 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 <div class="modal screen" id="modal" hidden>
  <div class="dialog">
   <section class="card panel" id="panel">
-   <div class="ptitle" id="ptitle"></div>
-   <div class="pdesc" style="margin-top:6px">Incolla il link .ics del calendario, oppure leggilo dal codice QR. Resta <b>solo in questo browser</b>: puoi condividere la pagina senza condividere i tuoi turni.</div>
-   <div class="linkrow">
-     <input id="linkIn" type="password" autocomplete="off" spellcheck="false" placeholder="https://api.euc2.pure.cloud/api/v2/workforcemanagement/calendar/data/ics?calendarId=...">
-     <button class="iconbtn" id="eye" title="Mostra / nascondi link"></button>
+   <div class="dhead">
+     <div class="dico" id="dico"></div>
+     <div class="dtit"><div class="ptitle" id="ptitle"></div><div class="dsub">Il link resta <b>solo in questo browser</b>: condividi la pagina senza condividere i tuoi turni.</div></div>
+     <button class="iconbtn" id="chiudiX" title="Chiudi"></button>
    </div>
-   <div class="pbtns"><button id="salva"></button><button class="sec" id="rimuovi"></button><button class="sec" id="chiudi">Chiudi</button></div>
+   <div class="field">
+     <input id="linkIn" type="password" autocomplete="off" spellcheck="false" placeholder="Incolla qui il link .ics del calendario…">
+     <button class="iconbtn eyeIn" id="eye" title="Mostra / nascondi link"></button>
+   </div>
+   <div class="ctaRow"><button id="salva"></button><button class="sec" id="rimuovi"></button></div>
    <div class="pinfo" id="pinfo"></div>
-   <div class="orca"><span>oppure QR</span></div>
-   <div class="pbtns"><button class="sec" id="qrCam"></button><button class="sec" id="qrFileBtn">Carica immagine QR</button></div>
+   <div class="orca">Oppure usa il codice QR</div>
+   <button class="qropt" id="qrCam"><span class="qi"></span><span><b>Scansiona con la fotocamera</b><small>Inquadra il QR: il link si inserisce e si verifica da solo</small></span></button>
+   <button class="qropt" id="qrFileBtn"><span class="qi"></span><span><b>Carica immagine del QR</b><small>Scegli uno screenshot che contiene il codice</small></span></button>
    <video id="qrVideo" class="qrvid" playsinline muted autoplay></video>
    <div class="pinfo" id="qrHint"></div>
   </section>
@@ -335,7 +366,8 @@ const IC={
  dn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v3M17 3v3M4 9h16"/><path d="M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
- qr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h1v1h-1zM19 14h1M14 19h1"/></svg>'
+ qr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h1v1h-1zM19 14h1M14 19h1"/></svg>',
+ x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'
 };
 
 /* ===== Tema ===== */
@@ -429,8 +461,10 @@ function mostraSteps(){ $('steps').hidden=false; $('steps').scrollIntoView({beha
 function apriPanel(){
   const has=!!getLink();
   $('linkIn').value=getLink(); $('linkIn').type='password';
-  $('ptitle').innerHTML=has?'Link calendario collegato':'Collega il link del calendario';
+  $('ptitle').innerHTML=has?'Link calendario collegato':'Collega il calendario';
+  $('dico').innerHTML=has?IC.link:IC.cal;
   $('salva').innerHTML=IC.check+(has?'Salva e verifica':'Collega');
+  $('rimuovi').innerHTML=IC.unlink+'Rimuovi';
   $('rimuovi').hidden=!has;
   const pi=$('pinfo');
   pi.className='pinfo '+({ok:'ok',saved:'warn',err:'err'}[stato]||'');
@@ -467,7 +501,7 @@ function stopQR(){
   qrRun=false;
   if(qrStream){ qrStream.getTracks().forEach(t=>t.stop()); qrStream=null; }
   const v=$('qrVideo'); if(v){ v.classList.remove('on'); v.srcObject=null; }
-  const b=$('qrCam'); if(b) b.innerHTML=IC.qr+'Scansiona con la fotocamera';
+  const b=$('qrCam'); if(b) b.querySelector('b').textContent='Scansiona con la fotocamera';
 }
 function qrEsito(v){
   stopQR();
@@ -476,8 +510,7 @@ function qrEsito(v){
   const i=$('linkIn'); i.value=v; i.type='text';
   $('pinfo').className='pinfo'; $('pinfo').textContent='QR letto: verifica del link…';
   salvaLink();
-}
-async function qrStart(){
+}async function qrStart(){
   if(!qrHas()){ qrPrepara(); return; }
   if(qrStream){ stopQR(); qrHint(''); return; }
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ qrHint('Fotocamera non disponibile qui (serve https o un browser aggiornato).','warn'); return; }
@@ -485,7 +518,7 @@ async function qrStart(){
   try{ qrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}); }
   catch(e){ qrStream=null; qrHint('Permesso fotocamera negato o fotocamera non disponibile.','err'); return; }
   const vid=$('qrVideo');
-  vid.srcObject=qrStream; vid.classList.add('on'); $('qrCam').textContent='Interrompi';
+  vid.srcObject=qrStream; vid.classList.add('on'); $('qrCam').querySelector('b').textContent='Interrompi la fotocamera';
   qrHint('Inquadra il codice QR del calendario.');
   try{ await vid.play(); }catch(e){}
   qrRun=true;
@@ -651,14 +684,15 @@ function init(){
   $('prev').innerHTML=IC.up; $('next').innerHTML=IC.dn;
   $('prev').onclick=()=>vai(-1); $('next').onclick=()=>vai(1); $('oggi').onclick=tornaOggi;
   $('stato').onclick=()=>$('modal').hidden?apriPanel():chiudiPanel();
-  $('qrCam').innerHTML=IC.qr+'Scansiona con la fotocamera';
+  $('qrCam').querySelector('.qi').innerHTML=IC.qr;
+  $('qrFileBtn').querySelector('.qi').innerHTML=IC.down;
   $('qrCam').onclick=qrStart; $('qrFileBtn').onclick=()=>$('qrFile').click();
   $('qrFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f) qrDaFile(f);};
   $('modal').onclick=e=>{if(e.target===$('modal')) chiudiPanel();};
+  $('chiudiX').innerHTML=IC.x; $('chiudiX').onclick=chiudiPanel;
   $('eye').innerHTML=IC.eye; $('eye').onclick=()=>{const i=$('linkIn');i.type=i.type==='password'?'text':'password';};
   $('salva').onclick=salvaLink; $('linkIn').onkeydown=e=>{if(e.key==='Enter') salvaLink();};
-  $('rimuovi').innerHTML=IC.unlink+'Rimuovi link'; $('rimuovi').onclick=rimuoviLink;
-  $('chiudi').onclick=chiudiPanel;
+  $('rimuovi').onclick=rimuoviLink;
   $('scarica').innerHTML=IC.down+'Scarica di nuovo'; $('scarica').onclick=scarica;
   $('scegli').onclick=()=>$('file').click();
   $('file').onchange=e=>{importa(e.target.files);e.target.value='';};
