@@ -35,6 +35,7 @@ App a **file singolo**: `Turni Swisscom.html` (HTML + CSS + JS inline, zero dipe
 - Lo stato vuoto in `render()` è la card `.empty` con il solo pulsante `#cta` (apre il popup, o `sync(true)` se il link è già salvato); i file si importano col trascinamento o dal riquadro "Aggiorna".
 
 ### Rendering
+- I messaggi di esito (`msg()`, usato da `esito()`, import, cancellazioni) sono toast: pile in `#toasts` fissi in basso a destra, spariscono da soli dopo 5s (clic per chiudere subito). Niente più riga messaggio inline sotto la barra.
 - Il render è a stringhe HTML con `innerHTML`; nessun framework, nessun DOM virtuale. `trackHTML()` è condiviso tra vista schermo (`track`) e stampa (`ptr`): se cambi la geometria delle barre, verifica entrambi.
 - `fitLabels()` nasconde le etichette troppo strette con la classe `.tiny`; va richiamata dopo ogni render (già fatto via `requestAnimationFrame`).
 - Il PDF è una vista separata: `pdf()` costruisce `#print` con classi proprie (`pg`, `pgrid`, `pscale`, `prow`, `ptr`) e colori hardcoded chiari. Modifiche al tema scuro non devono toccare la stampa.

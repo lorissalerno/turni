@@ -79,7 +79,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .qropt small{display:block;font-size:11.5px;color:var(--muted);margin-top:1px;line-height:1.35}
 .qrvid{display:none;width:100%;max-height:320px;margin-top:10px;border-radius:8px;border:1px solid var(--line);background:#000;object-fit:cover}
 .qrvid.on{display:block}
-@media (prefers-reduced-motion:reduce){.modal,.dialog{animation:none}}
+@media (prefers-reduced-motion:reduce){.modal,.dialog,.toast{animation:none}}
 @media (max-width:480px){.dialog{padding:16px}}
 .empty{padding:38px 22px 34px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .empty .eico{width:48px;height:48px;border-radius:50%;background:var(--todaybg);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
@@ -89,8 +89,14 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .empty .ebtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px}
 .bar{display:flex;gap:8px;flex-wrap:wrap;padding:10px;margin-bottom:6px;align-items:center}
 .bar .sp{flex:1}
-.msg{font-size:12px;min-height:16px;margin:4px 2px 12px;color:var(--ok)}
-.msg.err{color:var(--err)}
+#toasts{position:fixed;right:14px;bottom:14px;z-index:150;display:flex;flex-direction:column;gap:8px;align-items:flex-end;pointer-events:none}
+.toast{pointer-events:auto;cursor:pointer;display:flex;align-items:flex-start;gap:9px;max-width:340px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:10px 14px 10px 12px;font-size:12.5px;line-height:1.45;color:var(--text);box-shadow:0 12px 32px rgba(0,0,0,.28),0 2px 8px rgba(0,0,0,.14);animation:tin .25s cubic-bezier(.2,.8,.2,1)}
+.toast svg{width:16px;height:16px;flex:none;margin-top:1px}
+.toast.ok svg{color:var(--ok)} .toast.err{border-left-color:var(--err)} .toast.err svg{color:var(--err)}
+.toast.out{animation:tout .25s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateX(14px)}}
+@keyframes tout{to{opacity:0;transform:translateY(6px)}}
+@media (max-width:480px){#toasts{left:14px}.toast{max-width:none}}
 .nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
 .nav[hidden]{display:none}
 .nav .lbl{flex:1;text-align:center;font-size:14px;font-weight:700;color:var(--head);display:flex;align-items:center;justify-content:center;gap:8px}
@@ -210,7 +216,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
   <span class="sp"></span>
   <button class="del" id="canc"></button>
 </div>
-<div class="msg" id="msg"></div>
+<div id="toasts" class="screen"></div>
 
 <div class="nav" id="nav">
   <button class="iconbtn" id="prev" title="Settimana precedente (←)"></button>
@@ -374,9 +380,18 @@ const IC={
 function setTema(t){document.documentElement.dataset.theme=t;localStorage.setItem(LS_TEMA,t);
   $('tema').innerHTML=t==='dark'?IC.sun:IC.moon; $('tema').title=t==='dark'?'Tema chiaro':'Tema scuro';}
 
-/* ===== Messaggi ===== */
-let msgT;
-function msg(t,err){const el=$('msg');el.textContent=t;el.className='msg'+(err?' err':'');clearTimeout(msgT);msgT=setTimeout(()=>el.textContent='',9000);}
+/* ===== Messaggi (toast in basso a destra, 5s) ===== */
+function msg(t,err){
+  const box=$('toasts'), el=document.createElement('div');
+  el.className='toast '+(err?'err':'ok');
+  el.innerHTML=`<span>${err?IC.warn:IC.check}</span><span class="ttx"></span>`;
+  el.querySelector('.ttx').textContent=t;
+  let via=()=>{clearTimeout(tm);el.classList.add('out');setTimeout(()=>el.remove(),260);};
+  el.onclick=via;
+  box.appendChild(el);
+  while(box.children.length>4) box.firstChild.remove();
+  const tm=setTimeout(via,5000);
+}
 
 /* ===== Merge (riscrive anche i giorni passati) ===== */
 function merge(nuovi){
