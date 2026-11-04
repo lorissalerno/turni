@@ -623,13 +623,7 @@ function giorniVista(){
   for(let k=oggi;k<=fine;k=kAdd(k,1)) out.push(k);
   return ks[ks.length-1]<oggi?[]:out;
 }
-function scala(keys,d){
-  let a=1440,b=0;
-  keys.forEach(k=>{const t=d[k]; if(t&&t.tipo==='turno'){const v=visSe(t); if(v.length){a=Math.min(a,v[0].s);b=Math.max(b,Math.max(...v.map(x=>x.e)));}}});
-  if(b===0){a=480;b=1020;}
-  a=Math.floor(a/60)*60; b=Math.ceil(b/60)*60; if(b-a<120) b=a+120;
-  return [a,b];
-}
+function scala(){return [7*60,20*60];}
 function scaleHTML(a,b,c){
   const n=(b-a)/60; let h='';
   for(let i=0;i<=n;i++) h+=`<span class="${i===0?'first':i===n?'last':''}" style="left:${i/n*100}%">${pad(a/60+i)}</span>`;
@@ -638,7 +632,7 @@ function scaleHTML(a,b,c){
 function trackHTML(t,a,b,c){
   const n=(b-a)/60; let h='';
   for(let i=1;i<n;i++) h+=`<div class="gl" style="left:${i/n*100}%"></div>`;
-  const P=m=>(m-a)/(b-a)*100;
+  const P=m=>Math.min(100,Math.max(0,(m-a)/(b-a)*100));
   if(!t) h+='<div class="free">Libero</div>';
   else if(t.tipo==='vacanza') h+='<div class="seg vac" style="left:0;width:100%"><span>VACANZA</span></div>';
   else if(t.tipo==='altro') h+=`<div class="seg altro" style="left:0;width:100%" title="${esc(t.label)}"><span>${esc(t.label)}</span></div>`;
