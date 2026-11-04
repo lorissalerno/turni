@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Cosa è
-App a **file singolo**: `Turni Swisscom.html` (HTML + CSS + JS inline, zero dipendenze, zero build). Mostra i turni di lavoro importati da un calendario Genesys (`.ics`) o da testo incollato, con vista settimanale, export WhatsApp e PDF.
+App a **file singolo**: `Turni Swisscom.html` (HTML + CSS + JS inline, zero dipendenze, zero build). Mostra i turni di lavoro importati da un calendario Genesys (`.ics`) o da testo incollato, con vista settimanale ed export PDF.
 
 - Nessun package manager, nessun test, nessuna CI. La verifica è manuale: apri il file nel browser, trascina un `.ics`, controlla la console.
 - Repository git: remote `origin` = `https://github.com/lorissalerno/turni.git`, branch `main` (`gh` non è installato).
@@ -10,7 +10,7 @@ App a **file singolo**: `Turni Swisscom.html` (HTML + CSS + JS inline, zero dipe
 ## Struttura del file (in ordine)
 1. `<style>`: variabili tema in `html[data-theme="white"|"dark"]`, poi stili screen, poi blocco `@media print` per il PDF.
 2. Markup: due contenitori separati — `.wrap.screen` (UI) e `#print` (solo stampa, generato al volo).
-3. `<script>`: utility date → parser → storage → merge → link/sync → render → WhatsApp → PDF → `init()`.
+3. `<script>`: utility date → parser → storage → merge → link/sync → render → PDF → `init()`.
 
 ## Regole non ovvie
 
