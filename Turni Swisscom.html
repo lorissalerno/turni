@@ -179,7 +179,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .overlay{position:fixed;inset:0;background:rgba(11,92,255,.12);border:3px dashed var(--accent);display:none;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:var(--accent);z-index:99;pointer-events:none}
 .overlay.on{display:flex}
 #print{display:none}
-@media (max-width:600px){body{overflow-x:clip}.wrap{padding:14px 12px 8px}header{gap:8px;padding-bottom:10px;margin-bottom:14px;align-items:center}header>div:first-child{flex:1;min-width:0}h1{font-size:19px}.sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.right{justify-content:flex-end;gap:6px}.tbtn,.iconbtn{height:38px}.iconbtn{width:38px}.stato{height:38px;padding:0 10px 0 9px}.modal{align-items:flex-end;padding:0}#tmodal{align-items:flex-start}.dialog{max-width:none;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;animation:sheet .3s cubic-bezier(.2,.8,.2,1)}#tmodal .dialog{border-radius:16px;margin-top:calc(24px + env(safe-area-inset-top));animation:sheetTop .3s cubic-bezier(.2,.8,.2,1)}.ctaRow #salva,.ctaRow .sec{height:48px}.field input{height:48px}.tfoot button{flex:1;min-height:44px}.whead{display:block;padding:8px 10px 2px}.whead>div:first-child{display:none}.row{display:block;padding:10px 10px 12px 7px;min-height:0}.dl{margin-bottom:7px}.track{height:34px}.seg{font-size:11.5px}.det{padding-left:0;grid-template-columns:84px 1fr;gap:2px 8px}.nav{gap:6px}.nav .iconbtn{width:40px;height:40px}.nav .sec{min-height:40px}.nav .lbl{font-size:12.5px;gap:6px}.empty{padding:26px 16px 24px}.footbar{padding-bottom:env(safe-area-inset-bottom)}#toasts{bottom:calc(14px + env(safe-area-inset-bottom))}.tfoot{flex-wrap:wrap}}
+@media (max-width:600px){body{overflow-x:clip}.wrap{padding:14px 12px 8px}header{gap:8px;padding-bottom:10px;margin-bottom:14px;align-items:center}header>div:first-child{flex:1;min-width:0}h1{font-size:19px}.sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.right{justify-content:flex-end;gap:6px}.tbtn,.iconbtn{height:38px}.iconbtn{width:38px}.stato{height:38px;padding:0 10px 0 9px}.modal{align-items:flex-end;padding:0}#tmodal{align-items:flex-start}.dialog{max-width:none;max-height:92vh;max-height:92dvh;border-radius:16px 16px 0 0;animation:sheet .3s cubic-bezier(.2,.8,.2,1)}#tmodal .dialog{border-radius:16px;margin-top:calc(24px + env(safe-area-inset-top));animation:sheetTop .3s cubic-bezier(.2,.8,.2,1)}.ctaRow #salva,.ctaRow .sec{height:48px}.field input{height:48px}.tfoot button{flex:1;min-height:44px}.whead{display:block;padding:8px 10px 2px}.whead>div:first-child{display:none}.row{display:block;padding:10px 10px 12px 7px;min-height:0}.dl{margin-bottom:7px}.track{height:34px}.seg{font-size:11.5px}.det{padding-left:0;grid-template-columns:84px 1fr;gap:2px 8px}.nav{gap:6px}#prev{height:42px}.nav .iconbtn{width:40px;height:40px}.nav .sec{min-height:40px}.nav .lbl{font-size:12.5px;gap:6px}.empty{padding:26px 16px 24px}.footbar{padding-bottom:env(safe-area-inset-bottom)}#toasts{bottom:calc(14px + env(safe-area-inset-bottom))}.tfoot{flex-wrap:wrap}}
 @keyframes sheet{from{opacity:0;transform:translateY(24px)}}
 @keyframes sheetTop{from{opacity:0;transform:translateY(-24px)}}
 @page{size:A4 portrait;margin:11mm 12mm}
@@ -680,7 +680,7 @@ function render(){
     return;
   }
   const keys=giorniVista();
-  if(!keys.length){out.innerHTML='<div class="card vuoto">Nessun turno da oggi in poi. Premi <b>Aggiorna</b> oppure usa ▲ per vedere le settimane passate.</div>';return;}
+  if(!keys.length){out.innerHTML='<div class="card vuoto">Nessun turno da oggi in poi. Premi <b>Aggiorna</b> oppure usa la barra qui sopra per vedere le settimane passate.</div>';return;}
   const [a,b]=scala(keys,d);
   const sett={}; keys.forEach(k=>(sett[monday(k)]=sett[monday(k)]||[]).push(k));
   let h='';
@@ -710,7 +710,7 @@ function navUI(ks){
 }
 function vai(dir){
   const oggi=oggiK(), cur=monday(oggi);
-  if(dir<0){ vista=vista?kAdd(vista,-7):kAdd(cur,-7); }
+  if(dir<0){ const ks=Object.keys(load()).sort(); const min=ks.length?monday(ks[0]):cur; const n=vista?kAdd(vista,-7):kAdd(cur,-7); vista=n<min?min:n; }
   else{ if(!vista) return; const n=kAdd(vista,7); vista=n>oggi?null:n; }
   render();
 }
@@ -765,7 +765,8 @@ function init(){
   $('wa').innerHTML=IC.wa+'<span class="lbl">WhatsApp</span>'; $('wa').onclick=whatsapp;
   $('pdfb').innerHTML=IC.pdf+'<span class="lbl">PDF</span>'; $('pdfb').onclick=pdf;
   $('canc').innerHTML=IC.trash+'<span class="lbl">Cancella</span>'; $('canc').onclick=()=>{if(confirm('Cancellare tutti i turni salvati? Il link resta collegato.')){localStorage.removeItem(LS);vista=null;render();msg('Turni cancellati.');}};
-  $('prev').innerHTML=IC.up; $('next').innerHTML=IC.dn;
+  $('prev').innerHTML=IC.up+'<span>Mostra la settimana precedente</span>'; $('next').innerHTML=IC.dn;
+  $('next').title='Nascondi una settimana sopra (→)';
   $('prev').onclick=()=>vai(-1); $('next').onclick=()=>vai(1); $('oggi').onclick=tornaOggi;
   $('stato').onclick=()=>$('modal').hidden?apriPanel():chiudiPanel();
   $('menu').innerHTML=IC.gear; $('menu').onclick=()=>{const t=$('tools'),a=t.classList.toggle('aperto');$('menu').setAttribute('aria-expanded',a);};
