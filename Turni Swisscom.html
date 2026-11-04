@@ -467,9 +467,7 @@ function setStato(s,m){
   aggiornaSub();
 }
 function aggiornaSub(){
-  const M=meta(); let t=M.last?`Ultimo aggiornamento ${fmtTs(M.last)}`+(M.via==='link'?' · dal link':' · da file'):'Nessun aggiornamento';
-  if(stato==='ok') t+=' · aggiornamento automatico ogni 15 min';
-  $('sub').textContent=t;
+  const M=meta(); $('sub').textContent=M.last?`Ultimo aggiornamento ${fmtTs(M.last)}`:'Nessun aggiornamento';
 }
 async function fetchLink(link){
   try{
