@@ -674,7 +674,7 @@ function mostraTurno(k){
     const righe=[]; vis.forEach(x=>{const l=righe[righe.length-1]; if(l&&l.c===mapC(x)&&l.e===x.s){l.e=x.e; if(isOffice(l.n)&&!isOffice(x.n)){l.n=x.n;l.d=x.d;} else if(x.d&&!l.d)l.d=x.d;} else righe.push({s:x.s,e:x.e,n:x.n,d:x.d,c:mapC(x)});});
     const freq={}; righe.forEach(r=>{if(r.d)freq[r.d]=(freq[r.d]||0)+1;});
     corpo+='<ul class="tlist">'+righe.map(x=>{const col={pause:'pause',train:'train',meet:'meet',extra:'extra',recup:'recup',off:'shift',shift:'shift'}[cls(x.n)]||'shift';return `<li class="triga"><span class="pall ${cls(x.n)}" style="background:var(--${col})"></span><span><span class="to">${hm(x.s)} – ${hm(x.e)}</span><span class="tn"> ${esc(x.n)}${x.d&&freq[x.d]<2?'<small>'+esc(x.d)+'</small>':''}</span></span><span class="du">${dur(x.e-x.s)}</span></li>`;}).join('')+'</ul>';
-  } else if(t&&t.tipo==='vacanza'){tipo='Vacanza';ico=IC.sun;}
+  } else if(t&&t.tipo==='vacanza'){tipo='Vacanza';ico=IC.sun;corpo+=`<div class="ttot"><b>VACANZA</b><span class="tpill">Giornata intera · nessun turno</span></div>`;}
   else if(t&&t.tipo==='altro'){tipo=esc(t.label);ico=IC.cal;}
   const note=t?noteUniche(t):[];
   if(note.length) corpo+=`<div class="tnota"><b>Note</b>${note.map(n=>esc(n)).join('<br>')}</div>`;
