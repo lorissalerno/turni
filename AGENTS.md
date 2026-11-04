@@ -4,7 +4,7 @@
 App a **file singolo**: `Turni Swisscom.html` (HTML + CSS + JS inline, zero dipendenze, zero build). Mostra i turni di lavoro importati da un calendario Genesys (`.ics`) o da testo incollato, con vista settimanale, export WhatsApp e PDF.
 
 - Nessun package manager, nessun test, nessuna CI. La verifica è manuale: apri il file nel browser, trascina un `.ics`, controlla la console.
-- Non è ancora un repository git.
+- Repository git: remote `origin` = `https://github.com/lorissalerno/turni.git`, branch `main` (`gh` non è installato).
 - UI e messaggi in italiano: mantieni la lingua.
 
 ## Struttura del file (in ordine)
