@@ -126,6 +126,8 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .seg.vac{background:var(--vac);letter-spacing:1.5px;font-size:10.5px}
 .seg.altro{background:var(--altro)}
 .seg.tiny span{visibility:hidden}
+.seg.nl{border-top-left-radius:0;border-bottom-left-radius:0}
+.seg.nr{border-top-right-radius:0;border-bottom-right-radius:0}
 .free{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--free)}
 .det{grid-column:1/-1;margin:6px 0 2px;font-size:12px;color:var(--muted);display:grid;grid-template-columns:110px 1fr;gap:2px 10px;padding-left:137px}
 .det em{grid-column:2;color:var(--accent);font-style:italic}
@@ -163,6 +165,8 @@ button:disabled{opacity:.35;cursor:default;filter:none}
  .ptr .seg.shift{background:#0B5CFF}.ptr .seg.train{background:#8B3FD9}
  .ptr .seg.pause{background:#B9C0CA;color:#2B3240;font-size:6pt;border-radius:0}
  .ptr .seg.vac{background:#12A150;font-size:6.5pt}.ptr .seg.altro{background:#E07B00}
+  .ptr .seg.nl{border-top-left-radius:0;border-bottom-left-radius:0}
+  .ptr .seg.nr{border-top-right-radius:0;border-bottom-right-radius:0}
  .ptr .free{font-size:7pt;color:#9AA2AE}
  .pfoot{margin-top:auto;padding-top:2mm}
  .pfoot div{grid-column:2;text-align:center;font-size:7pt;font-weight:300;color:#5B6474}
@@ -588,9 +592,10 @@ function trackHTML(t,a,b,c){
   if(!t) h+='<div class="free">Libero</div>';
   else if(t.tipo==='vacanza') h+='<div class="seg vac" style="left:0;width:100%"><span>VACANZA</span></div>';
   else if(t.tipo==='altro') h+=`<div class="seg altro" style="left:0;width:100%" title="${esc(t.label)}"><span>${esc(t.label)}</span></div>`;
-  else blocchi(t).forEach(x=>{
+  else blocchi(t).forEach((x,i,L)=>{
     const lab=x.c==='pause'?`${hm(x.s)}–${hm(x.e)}`:`${hm(x.s)} – ${hm(x.e)}`;
-    h+=`<div class="seg ${x.c}" style="left:${P(x.s)}%;width:${P(x.e)-P(x.s)}%" title="${lab}"><span>${lab}</span></div>`;
+    const tl=i>0&&L[i-1].e===x.s, tr=i<L.length-1&&L[i+1].s===x.e;
+    h+=`<div class="seg ${x.c}${tl?' nl':''}${tr?' nr':''}" style="left:${P(x.s)}%;width:${P(x.e)-P(x.s)}%" title="${lab}"><span>${lab}</span></div>`;
   });
   return `<div class="${c}">${h}</div>`;
 }
