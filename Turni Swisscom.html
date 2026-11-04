@@ -12,6 +12,7 @@ html[data-theme="dark"]{--bg:#0E1116;--card:#171B22;--line:#2A303B;--text:#E8EBF
  --shift:#3D7BFF;--train:#A066FF;--pause:#4A5361;--pauseTxt:#E8EBF0;--vac:#1FA557;--altro:#E8920A;--free:#5E6878;--todaybg:#1B2535;--accent:#5B95FF;
  --ok:#2BC46B;--warn:#F59E0B;--err:#F0645A;--off:#6B7584}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--text);font-family:"TheSans Swisscom","Segoe UI",Arial,sans-serif;transition:background .2s,color .2s}
 .wrap{max-width:960px;margin:0 auto;padding:28px 20px 10px}
 header{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap;border-bottom:2px solid var(--accent);padding-bottom:12px;margin-bottom:18px}
@@ -45,11 +46,27 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .steps{border-left:3px solid var(--warn)}
 .steps ol{margin:6px 0 12px;padding-left:20px;font-size:13px;line-height:1.7}
 .steps a{color:var(--accent);cursor:pointer;text-decoration:underline}
+.modal{position:fixed;inset:0;z-index:120;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(8,14,26,.45);backdrop-filter:blur(2px)}
+.modal[hidden]{display:none}
+.dialog{width:100%;max-width:540px;max-height:calc(100vh - 36px);overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:18px 20px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.dialog .panel{margin:0;padding:0;border:0;background:transparent;border-radius:0}
+.tabs{display:flex;gap:4px;margin-top:12px;border-bottom:1px solid var(--line)}
+.tab{background:transparent;color:var(--muted);border:0;border-bottom:2px solid transparent;border-radius:0;padding:7px 10px;font-size:12px;font-weight:600}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.qrvid{display:none;width:100%;max-height:330px;margin-top:12px;border-radius:4px;background:#000;object-fit:cover}
+.qrvid.on{display:block}
+.empty{padding:38px 22px 34px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.empty .eico{width:48px;height:48px;border-radius:50%;background:var(--todaybg);color:var(--accent);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.empty .eico svg{width:24px;height:24px}
+.empty h2{margin:0 0 6px;font-size:16px;color:var(--head)}
+.empty p{margin:0;font-size:13px;color:var(--muted);max-width:400px;line-height:1.6}
+.empty .ebtns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px}
 .bar{display:flex;gap:8px;flex-wrap:wrap;padding:10px;margin-bottom:6px;align-items:center}
 .bar .sp{flex:1}
 .msg{font-size:12px;min-height:16px;margin:4px 2px 12px;color:var(--ok)}
 .msg.err{color:var(--err)}
 .nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.nav[hidden]{display:none}
 .nav .lbl{flex:1;text-align:center;font-size:14px;font-weight:700;color:var(--head);display:flex;align-items:center;justify-content:center;gap:8px}
 .tag{font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:3px;color:#fff}
 .tag.past{background:var(--off)} .tag.now{background:var(--accent)} .tag.next{background:var(--ok)}
@@ -128,16 +145,29 @@ button:disabled{opacity:.35;cursor:default;filter:none}
   </div>
 </header>
 
-<section class="card panel" id="panel" hidden>
-  <div class="ptitle" id="ptitle"></div>
-  <div class="pdesc">Incolla il link .ics del tuo calendario Genesys. Viene salvato <b>solo in questo browser</b>, non nel file: puoi condividere la pagina senza condividere i tuoi turni.</div>
-  <div class="linkrow">
-    <input id="linkIn" type="password" autocomplete="off" spellcheck="false" placeholder="https://api.euc2.pure.cloud/api/v2/workforcemanagement/calendar/data/ics?calendarId=...">
-    <button class="iconbtn" id="eye" title="Mostra / nascondi link"></button>
-  </div>
-  <div class="pbtns"><button id="salva"></button><button class="sec" id="rimuovi"></button><button class="sec" id="chiudi">Chiudi</button></div>
-  <div class="pinfo" id="pinfo"></div>
-</section>
+<div class="modal screen" id="modal" hidden>
+ <div class="dialog">
+  <section class="card panel" id="panel">
+   <div class="ptitle" id="ptitle"></div>
+   <div class="tabs"><button class="tab on" id="tabLink">Link calendario</button><button class="tab" id="tabQR">Codice QR</button></div>
+   <div id="paneLink">
+    <div class="pdesc" style="margin-top:12px">Incolla il link .ics del tuo calendario Genesys. Viene salvato <b>solo in questo browser</b>, non nel file: puoi condividere la pagina senza condividere i tuoi turni.</div>
+    <div class="linkrow">
+      <input id="linkIn" type="password" autocomplete="off" spellcheck="false" placeholder="https://api.euc2.pure.cloud/api/v2/workforcemanagement/calendar/data/ics?calendarId=...">
+      <button class="iconbtn" id="eye" title="Mostra / nascondi link"></button>
+    </div>
+    <div class="pbtns"><button id="salva"></button><button class="sec" id="rimuovi"></button><button class="sec" id="chiudi">Chiudi</button></div>
+    <div class="pinfo" id="pinfo"></div>
+   </div>
+   <div id="paneQR" hidden>
+    <div class="pdesc" style="margin-top:12px">Inquadra con la fotocamera il codice QR che contiene il link del calendario, oppure carica uno screenshot del QR.</div>
+    <div class="pbtns"><button id="qrCam">Scansiona con la fotocamera</button><button class="sec" id="qrFileBtn">Carica immagine QR</button></div>
+    <video id="qrVideo" class="qrvid" playsinline muted autoplay></video>
+    <div class="pinfo" id="qrHint"></div>
+   </div>
+  </section>
+ </div>
+</div>
 
 <section class="card steps" id="steps" hidden>
   <div class="ptitle" style="color:var(--warn)">Il calendario è in download</div>
@@ -157,7 +187,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 </div>
 <div class="msg" id="msg"></div>
 
-<div class="nav">
+<div class="nav" id="nav">
   <button class="iconbtn" id="prev" title="Settimana precedente (←)"></button>
   <div class="lbl" id="navlbl"></div>
   <button class="iconbtn" id="next" title="Settimana successiva (→)"></button>
@@ -167,6 +197,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 <div id="out"></div>
 <div class="foot"><div id="copy"></div></div>
 <input type="file" id="file" accept=".ics,.txt,.csv,text/calendar,text/plain" multiple hidden>
+<input type="file" id="qrFile" accept="image/*" hidden>
 </div>
 <div id="print"></div>
 
@@ -308,7 +339,9 @@ const IC={
  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
  up:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg>',
  dn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>',
- trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>'
+ trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
+ cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v3M17 3v3M4 9h16"/><path d="M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/></svg>',
+ qr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4z"/><path d="M14 14h3v3h-3zM19 19h1v1h-1zM19 14h1M14 19h1"/></svg>'
 };
 
 /* ===== Tema ===== */
@@ -400,7 +433,7 @@ function scarica(){const l=getLink(); if(l) window.open(l,'_blank');}
 function mostraSteps(){ $('steps').hidden=false; $('steps').scrollIntoView({behavior:'smooth',block:'nearest'}); }
 
 function apriPanel(){
-  const p=$('panel'), has=!!getLink();
+  const has=!!getLink();
   $('linkIn').value=getLink(); $('linkIn').type='password';
   $('ptitle').innerHTML=has?'Link calendario collegato':'Collega il link del calendario';
   $('salva').innerHTML=IC.check+(has?'Salva e verifica':'Collega');
@@ -408,7 +441,19 @@ function apriPanel(){
   const pi=$('pinfo');
   pi.className='pinfo '+({ok:'ok',saved:'warn',err:'err'}[stato]||'');
   pi.textContent={ok:'✓ Il link funziona: i turni si aggiornano automaticamente.',saved:'Il link è salvato, ma il browser blocca la lettura diretta. Usa Aggiorna: scarica il file e trascinalo nella pagina.',err:statoMsg,none:''}[stato]||'';
-  p.hidden=false; $('linkIn').focus();
+  setTab('link');
+  $('modal').hidden=false;
+  requestAnimationFrame(()=>$('linkIn').focus());
+}
+function chiudiPanel(){ stopQR(); $('modal').hidden=true; }
+function setTab(t){
+  const isLink=t==='link';
+  $('tabLink').classList.toggle('on',isLink);
+  $('tabQR').classList.toggle('on',!isLink);
+  $('paneLink').hidden=!isLink;
+  $('paneQR').hidden=isLink;
+  if(isLink){ stopQR(); return; }
+  qrPrepara();
 }
 async function salvaLink(){
   const v=$('linkIn').value.trim(), pi=$('pinfo');
@@ -416,12 +461,69 @@ async function salvaLink(){
   localStorage.setItem(LS_LINK,v);
   pi.className='pinfo';pi.textContent='Verifica in corso…';
   const r=await sync(false);
-  if(r==='ok'){pi.className='pinfo ok';pi.textContent='✓ Collegato! Il link funziona e i turni sono aggiornati.';}
+  if(r==='ok'){pi.className='pinfo ok';pi.textContent='✓ Collegato! Il link funziona e i turni sono aggiornati.';setTimeout(chiudiPanel,900);}
   else if(r==='err'){pi.className='pinfo err';pi.textContent=statoMsg;}
   else{pi.className='pinfo warn';pi.textContent='Link salvato. Il browser non permette la lettura diretta: premi Aggiorna, poi trascina il file scaricato nella pagina.';}
   $('rimuovi').hidden=false; $('ptitle').textContent='Link calendario collegato';
 }
-function rimuoviLink(){ if(!confirm('Rimuovere il link? I turni salvati restano.')) return; localStorage.removeItem(LS_LINK); setStato('none'); $('panel').hidden=true; $('steps').hidden=true; msg('Link rimosso.'); }
+function rimuoviLink(){ if(!confirm('Rimuovere il link? I turni salvati restano.')) return; localStorage.removeItem(LS_LINK); setStato('none'); chiudiPanel(); $('steps').hidden=true; msg('Link rimosso.'); }
+
+/* ===== QR: link del calendario letto dal codice ===== */
+let qrDet=null, qrStream=null, qrRun=false;
+const qrHas=()=>{try{return typeof BarcodeDetector!=='undefined';}catch(e){return false;}};
+function qrHint(t,c){const e=$('qrHint'); if(!e) return; e.className='pinfo '+(c||''); e.textContent=t||'';}
+async function qrDetector(){ if(qrDet) return qrDet; qrDet=new BarcodeDetector({formats:['qr_code']}); return qrDet; }
+function qrPrepara(){
+  if(qrHas()){ if(!$('qrHint').textContent) qrHint('Inquadra il QR oppure scegli un\'immagine: il link viene riempito e verificato da solo.'); return; }
+  qrHint('Questo browser non sa leggere i QR. Incolla il link nella scheda «Link calendario», oppure scansiona il QR con l\'app Fotocamera del telefono.','warn');
+  $('qrCam').disabled=true; $('qrFileBtn').disabled=true;
+}
+function stopQR(){
+  qrRun=false;
+  if(qrStream){ qrStream.getTracks().forEach(t=>t.stop()); qrStream=null; }
+  const v=$('qrVideo'); if(v){ v.classList.remove('on'); v.srcObject=null; }
+  const b=$('qrCam'); if(b) b.textContent='Scansiona con la fotocamera';
+}
+function qrEsito(v){
+  stopQR();
+  if(!v){ qrHint('Nessun codice QR riconosciuto.','err'); return; }
+  if(!/^https:\/\/\S+$/i.test(v)){ qrHint('Il QR non contiene un link https valido: '+String(v).slice(0,80),'err'); return; }
+  setTab('link');
+  const i=$('linkIn'); i.value=v; i.type='text';
+  $('pinfo').className='pinfo'; $('pinfo').textContent='QR letto: verifica del link…';
+  salvaLink();
+}
+async function qrStart(){
+  if(!qrHas()){ qrPrepara(); return; }
+  if(qrStream){ stopQR(); qrHint(''); return; }
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){ qrHint('Fotocamera non disponibile qui (serve https o un browser aggiornato).','warn'); return; }
+  let det; try{ det=await qrDetector(); }catch(e){ qrHint('Questo browser non sa leggere i QR: incolla il link a mano.','err'); return; }
+  try{ qrStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}); }
+  catch(e){ qrStream=null; qrHint('Permesso fotocamera negato o fotocamera non disponibile.','err'); return; }
+  const vid=$('qrVideo');
+  vid.srcObject=qrStream; vid.classList.add('on'); $('qrCam').textContent='Interrompi';
+  qrHint('Inquadra il codice QR del calendario.');
+  try{ await vid.play(); }catch(e){}
+  qrRun=true;
+  const giro=async()=>{
+    if(!qrRun) return;
+    try{ const r=await det.detect(vid); if(r&&r.length){ qrEsito(r[0].rawValue); return; } }catch(e){}
+    if(qrRun) requestAnimationFrame(giro);
+  };
+  giro();
+}
+async function qrDaFile(f){
+  if(!qrHas()){ qrPrepara(); return; }
+  qrHint('Lettura in corso…');
+  try{
+    const det=await qrDetector();
+    const bmp=await createImageBitmap(f);
+    const r=await det.detect(bmp);
+    if(bmp.close) bmp.close();
+    if(!r.length){ qrHint('Nessun QR trovato in questa immagine.','err'); return; }
+    qrEsito(r[0].rawValue);
+  }catch(e){ qrHint('Non riesco a leggere questa immagine.','err'); }
+}
 
 /* ===== Vista ===== */
 function giorniVista(){
@@ -469,7 +571,13 @@ const haNote=t=>t&&((t.note)||(t.segs||[]).some(x=>x.d));
 function render(){
   const d=load(), ks=Object.keys(d).sort(), out=$('out'), oggi=oggiK();
   navUI(ks);
-  if(!ks.length){out.innerHTML='<div class="card vuoto">Nessun turno salvato. Collega il link del calendario e premi <b>Aggiorna</b>, oppure trascina qui un file .ics / .txt.</div>';return;}
+  if(!ks.length){
+    const has=!!getLink();
+    out.innerHTML=`<div class="card empty"><div class="eico">${IC.cal}</div><h2>${has?'Nessun turno sincronizzato':'Nessun turno salvato'}</h2><p>${has?'Il calendario è collegato ma non ci sono ancora turni: prova ad aggiornare.':"Collega il calendario del tuo lavoro: i turni arrivano da soli. Puoi incollare il link .ics oppure leggere il codice QR."}</p><div class="ebtns"><button id="cta">${has?IC.sync+'Aggiorna':IC.link+'Collega il calendario'}</button><button class="sec" id="ctafile">${IC.down}Carica un file</button></div></div>`;
+    $('cta').onclick=has?()=>sync(true):apriPanel;
+    $('ctafile').onclick=()=>$('file').click();
+    return;
+  }
   const keys=giorniVista();
   if(!keys.length){out.innerHTML='<div class="card vuoto">Nessun turno da oggi in poi. Premi <b>Aggiorna</b> oppure usa ▲ per vedere le settimane passate.</div>';return;}
   const [a,b]=scala(keys,d);
@@ -492,6 +600,7 @@ function navUI(ks){
   const oggi=oggiK(), cur=monday(oggi);
   const min=ks.length?monday(ks[0]):cur, max=ks.length?monday(ks[ks.length-1]):cur;
   const pos=vista||null;
+  $('nav').hidden=!ks.length;
   $('prev').disabled=!ks.length||(pos?pos<=min:false);
   $('next').disabled=!ks.length||(pos?pos>=max:cur>=max);
   $('oggi').disabled=!pos;
@@ -558,17 +667,23 @@ function init(){
   $('canc').innerHTML=IC.trash+'Cancella turni'; $('canc').onclick=()=>{if(confirm('Cancellare tutti i turni salvati? Il link resta collegato.')){localStorage.removeItem(LS);vista=null;render();msg('Turni cancellati.');}};
   $('prev').innerHTML=IC.up; $('next').innerHTML=IC.dn;
   $('prev').onclick=()=>vai(-1); $('next').onclick=()=>vai(1); $('oggi').onclick=tornaOggi;
-  $('stato').onclick=()=>$('panel').hidden?apriPanel():($('panel').hidden=true);
+  $('stato').onclick=()=>$('modal').hidden?apriPanel():chiudiPanel();
+  $('tabLink').onclick=()=>setTab('link'); $('tabQR').onclick=()=>setTab('qr');
+  $('qrCam').onclick=qrStart; $('qrFileBtn').onclick=()=>$('qrFile').click();
+  $('qrFile').onchange=e=>{const f=e.target.files[0];e.target.value='';if(f) qrDaFile(f);};
+  $('modal').onclick=e=>{if(e.target===$('modal')) chiudiPanel();};
   $('eye').innerHTML=IC.eye; $('eye').onclick=()=>{const i=$('linkIn');i.type=i.type==='password'?'text':'password';};
   $('salva').onclick=salvaLink; $('linkIn').onkeydown=e=>{if(e.key==='Enter') salvaLink();};
   $('rimuovi').innerHTML=IC.unlink+'Rimuovi link'; $('rimuovi').onclick=rimuoviLink;
-  $('chiudi').onclick=()=>$('panel').hidden=true;
+  $('chiudi').onclick=chiudiPanel;
   $('scarica').innerHTML=IC.down+'Scarica di nuovo'; $('scarica').onclick=scarica;
   $('scegli').onclick=()=>$('file').click();
   $('file').onchange=e=>{importa(e.target.files);e.target.value='';};
   $('out').onclick=e=>{const r=e.target.closest('.row'); if(!r) return; aperto=aperto===r.dataset.k?null:r.dataset.k; render();};
-  document.addEventListener('keydown',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName)) return;
-    if(e.key==='ArrowLeft'&&!$('prev').disabled) vai(-1); if(e.key==='ArrowRight'&&!$('next').disabled) vai(1); if(e.key==='Escape') tornaOggi();});
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){ if(!$('modal').hidden){chiudiPanel();return;} if(!/INPUT|TEXTAREA/.test(e.target.tagName)) tornaOggi(); return; }
+    if(/INPUT|TEXTAREA/.test(e.target.tagName)) return;
+    if(e.key==='ArrowLeft'&&!$('prev').disabled) vai(-1); if(e.key==='ArrowRight'&&!$('next').disabled) vai(1);});
   let dc=0; const ov=$('overlay');
   addEventListener('dragenter',e=>{e.preventDefault();dc++;ov.classList.add('on');});
   addEventListener('dragleave',()=>{if(--dc<=0){dc=0;ov.classList.remove('on');}});

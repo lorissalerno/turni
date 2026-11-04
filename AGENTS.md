@@ -29,6 +29,11 @@ App a **file singolo**: `Turni Swisscom.html` (HTML + CSS + JS inline, zero dipe
 - Due parser distinti: `parseICS` e `parseTXT`, scelti da `parseAuto`. Se cambi la classificazione (`isPause`/`isTrain`/`isVac`), ricorda che l'ordine conta: `cls()` valuta pausa prima di training, quindi "Lunch" dentro un training diventa pausa.
 - Testo proveniente da ICS/TXT è **non fidato**: passalo sempre da `esc()` prima di inserirlo in `innerHTML`.
 
+### Collegamento calendario (popup) e QR
+- Il pannello del link è un popup: `#modal` > `.dialog` > `#panel`, con due schede (`#paneLink`, `#paneQR`). Si apre con `apriPanel()` e si chiude con `chiudiPanel()` (che ferma anche la fotocamera).
+- La lettura dei QR usa solo API native (`BarcodeDetector` + `getUserMedia`), nessuna libreria: se il browser non la supporta i pulsanti vengono disabilitati con un messaggio. Un QR valido riempie `#linkIn` e chiama `salvaLink()`.
+- Lo stato vuoto in `render()` è la card `.empty` con i pulsanti `#cta` (apre il popup, o `sync(true)` se il link è già salvato) e `#ctafile` (input file).
+
 ### Rendering
 - Il render è a stringhe HTML con `innerHTML`; nessun framework, nessun DOM virtuale. `trackHTML()` è condiviso tra vista schermo (`track`) e stampa (`ptr`): se cambi la geometria delle barre, verifica entrambi.
 - `fitLabels()` nasconde le etichette troppo strette con la classe `.tiny`; va richiamata dopo ogni render (già fatto via `requestAnimationFrame`).
