@@ -640,7 +640,9 @@ function trackHTML(t,a,b,c){
     const lab=x.c==='pause'?`${hm(x.s)}–${hm(x.e)}`:`${hm(x.s)} – ${hm(x.e)}`;
     const det=x.d?` · ${x.n} – ${x.d}`:x.n?` · ${x.n}`:'';
     const tl=i>0&&L[i-1].e===x.s, tr=i<L.length-1&&L[i+1].s===x.e;
-    h+=`<div class="seg ${x.c}${tl?' nl':''}${tr?' nr':''}" style="left:${P(x.s)}%;width:${P(x.e)-P(x.s)}%" title="${esc(lab+det)}"><span>${esc(lab)}</span></div>`;
+    let inn=`<span>${esc(lab)}</span>`;
+    if(x.c==='pause'){const du=dur(x.e-x.s);inn=`<span data-f="${esc(lab)}" data-m="${esc('Pausa '+du)}" data-s="${esc('P '+du)}">${esc(lab)}</span>`;}
+    h+=`<div class="seg ${x.c}${tl?' nl':''}${tr?' nr':''}" style="left:${P(x.s)}%;width:${P(x.e)-P(x.s)}%" title="${esc(lab+det)}">${inn}</div>`;
   });
   return `<div class="${c}">${h}</div>`;
 }
@@ -696,7 +698,12 @@ function render(){
   out.innerHTML=h;
   requestAnimationFrame(fitLabels);
 }
-function fitLabels(){document.querySelectorAll('.seg').forEach(s=>{s.classList.remove('tiny');const sp=s.firstElementChild; if(sp&&sp.scrollWidth>s.clientWidth-2) s.classList.add('tiny');});}
+function fitLabels(){document.querySelectorAll('.seg').forEach(s=>{const sp=s.firstElementChild; if(!sp)return;
+  if(sp.dataset.m&&s.closest('#out')){sp.textContent=sp.dataset.f; s.classList.remove('tiny');
+    if(sp.scrollWidth>s.clientWidth-2)sp.textContent=sp.dataset.m;
+    if(sp.scrollWidth>s.clientWidth-2)sp.textContent=sp.dataset.s;
+    if(sp.scrollWidth>s.clientWidth-2)s.classList.add('tiny');}
+  else{s.classList.remove('tiny'); if(sp.scrollWidth>s.clientWidth-2)s.classList.add('tiny');}});}
 
 function navUI(ks){
   const oggi=oggiK(), cur=monday(oggi);
