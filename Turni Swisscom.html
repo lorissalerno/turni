@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/5754111?s=280&v=4">
 <style>
 html[data-theme="white"]{--bg:#F5F7FA;--card:#FFFFFF;--line:#DDE2E8;--text:#111827;--muted:#5B6474;--head:#001155;--track:#EEF1F5;--grid:rgba(0,0,0,.06);
- --shift:#3E71C8;--train:#7E5DB5;--pause:#B9C0CA;--pauseTxt:#2B3240;--vac:#3F8F5C;--altro:#B97A26;--meet:#CD6118;--extra:#5F9BD1;--recup:#D4DAE1;--free:#9AA2AE;--todaybg:#EAF1FF;--accent:#0B5CFF;
+ --shift:#3E71C8;--train:#7E5DB5;--pause:#B9C0CA;--pauseTxt:#2B3240;--vac:#3F8F5C;--altro:#B97A26;--meet:#F0A52E;--extra:#5F9BD1;--recup:#D4DAE1;--free:#9AA2AE;--todaybg:#EAF1FF;--accent:#0B5CFF;
  --ok:#12A150;--warn:#E07B00;--err:#D92D20;--off:#8A93A3}
 html[data-theme="dark"]{--bg:#0E1116;--card:#171B22;--line:#2A303B;--text:#E8EBF0;--muted:#8F99A8;--head:#FFFFFF;--track:#0F1319;--grid:rgba(255,255,255,.05);
  --shift:#3D7BFF;--train:#A066FF;--pause:#4A5361;--pauseTxt:#E8EBF0;--vac:#1FA557;--altro:#E8920A;--meet:#FB923C;--extra:#8FBFFF;--recup:#6E7887;--free:#5E6878;--todaybg:#1B2535;--accent:#5B95FF;
@@ -148,7 +148,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
 .seg.pause{background:var(--pause);color:var(--pauseTxt);font-weight:500;font-size:10px;border-radius:0}
 .seg.vac{background:var(--vac);letter-spacing:1.5px;font-size:10.5px}
 .seg.altro{background:var(--altro)}
-.seg.meet{background:var(--meet)} .seg.extra{background:var(--extra);color:var(--pauseTxt)} .seg.recup{background:var(--recup);color:var(--pauseTxt)}
+.seg.meet{background:var(--meet)} html[data-theme="white"] .seg.meet{color:var(--pauseTxt)} .seg.extra{background:var(--extra);color:var(--pauseTxt)} .seg.recup{background:var(--recup);color:var(--pauseTxt)}
 .seg.tiny span{visibility:hidden}
 .seg.nl{border-top-left-radius:0;border-bottom-left-radius:0}
 .seg.nr{border-top-right-radius:0;border-bottom-right-radius:0}
@@ -218,7 +218,7 @@ button:disabled{opacity:.35;cursor:default;filter:none}
  .ptr .seg{font-size:6.8pt;border-radius:.6mm}
  .ptr .seg.shift{background:#3E71C8}.ptr .seg.train{background:#7E5DB5}
  .ptr .seg.pause{background:#B9C0CA;color:#2B3240;font-size:6pt;border-radius:0}
-  .ptr .seg.meet{background:#CD6118}.ptr .seg.extra{background:#5F9BD1}.ptr .seg.recup{background:#D4DAE1;color:#2B3240}
+  .ptr .seg.meet{background:#F0A52E;color:#2B3240}.ptr .seg.extra{background:#5F9BD1}.ptr .seg.recup{background:#D4DAE1;color:#2B3240}
  .ptr .seg.vac{background:#3F8F5C;font-size:6.5pt}.ptr .seg.altro{background:#B97A26}.ptr .seg.extra{color:#2B3240}.ptr .grplab{font-size:6.8pt}
   .ptr .seg.nl{border-top-left-radius:0;border-bottom-left-radius:0}
   .ptr .seg.nr{border-top-right-radius:0;border-bottom-right-radius:0}
@@ -646,7 +646,7 @@ function trackHTML(t,a,b,c){
   else if(t.tipo==='altro') h+=`<div class="seg altro" style="left:0;width:100%" title="${esc(t.label)}"><span>${esc(t.label)}</span></div>`;
   else{
     const bs=blocchi(t), groups=[]; let cur=null;
-    bs.forEach((x,i)=>{ if(x.c==='pause'||x.c==='recup'||x.c==='extra'){cur=null;} else if(!cur||x.s>cur.e){cur={s:x.s,e:x.e,idx:[i]};groups.push(cur);} else{cur.e=Math.max(cur.e,x.e);cur.idx.push(i);} });
+    bs.forEach((x,i)=>{ if(x.c==='pause'||x.c==='recup'||x.c==='extra'||x.c==='meet'){cur=null;} else if(!cur||x.s>cur.e){cur={s:x.s,e:x.e,idx:[i]};groups.push(cur);} else{cur.e=Math.max(cur.e,x.e);cur.idx.push(i);} });
     const multi=new Set(); groups.forEach(g=>{if(g.idx.length>1) g.idx.forEach(i=>multi.add(i));});
     bs.forEach((x,i)=>{
       const lab=x.c==='pause'?`${hm(x.s)}–${hm(x.e)}`:`${hm(x.s)} – ${hm(x.e)}`;
@@ -753,7 +753,7 @@ function pdf(modo){
   else{ const o=oggiK(); for(let k=o;k<=fine;k=kAdd(k,1)) keys.push(k); if(!keys.length){msg('Nessun turno da oggi in poi.',true);return;} }
   keys.forEach(k=>(mesi[k.slice(0,7)]=mesi[k.slice(0,7)]||[]).push(k));
   const mk=Object.keys(mesi); if(!mk.length){msg('Nessun turno da stampare.',true);return;}
-  const leg='<div class="pl"><span><i style="background:#3E71C8"></i>Turno</span><span><i style="background:#7E5DB5"></i>Training</span><span><i style="background:#CD6118"></i>Meeting</span><span><i style="background:#5F9BD1"></i>Straord.</span><span><i style="background:#D4DAE1"></i>Recupero</span><span><i style="background:#B9C0CA"></i>Pausa</span><span><i style="background:#3F8F5C"></i>Vacanza</span></div>';
+  const leg='<div class="pl"><span><i style="background:#3E71C8"></i>Turno</span><span><i style="background:#7E5DB5"></i>Training</span><span><i style="background:#F0A52E"></i>Meeting</span><span><i style="background:#5F9BD1"></i>Straord.</span><span><i style="background:#D4DAE1"></i>Recupero</span><span><i style="background:#B9C0CA"></i>Pausa</span><span><i style="background:#3F8F5C"></i>Vacanza</span></div>';
   let h='';
   mk.forEach(m=>{
     const keys=mesi[m], [a,b]=scala(keys,d), [y,mm]=m.split('-');
